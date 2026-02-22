@@ -49,6 +49,24 @@
         </div>
     </div>
 
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="winner-modal" style="display: none;">
+        <div class="winner-modal-content">
+            <div class="winner-crown">👑</div>
+            <h2 class="winner-title">GAME OVER!</h2>
+            <div class="winner-announcement">
+                <span class="winner-label">WINNER</span>
+                <span id="winnerName" class="winner-name"></span>
+                <span id="winnerScore" class="winner-score"></span>
+            </div>
+            <div class="winner-rankings" id="winnerRankings"></div>
+            <button id="closeWinnerModal" class="btn-primary">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
     <script src="script.js"></script>
 </body>
 </html>

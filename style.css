@@ -523,3 +523,141 @@ h2, h3 {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ==================== */
+/* WINNER MODAL STYLES  */
+/* ==================== */
+.winner-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: modalFadeIn 0.5s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.winner-modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+    border: 3px solid #ffd700;
+    animation: modalPopIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalPopIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.winner-crown {
+    font-size: 4em;
+    animation: crownBounce 1s ease-in-out infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes crownBounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.winner-title {
+    color: #ffd700;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    letter-spacing: 3px;
+}
+
+.winner-announcement {
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.winner-label {
+    display: block;
+    color: #ffd700;
+    font-size: 1em;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.winner-name {
+    display: block;
+    color: #fff;
+    font-size: 2.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.winner-score {
+    display: block;
+    color: #4ade80;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.winner-rankings {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.winner-rank-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.winner-rank-item.winner {
+    background: rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.winner-rank-position {
+    font-size: 1.3em;
+    margin-right: 15px;
+    width: 30px;
+}
+
+.winner-rank-player {
+    flex: 1;
+    font-weight: 600;
+}
+
+.winner-rank-score {
+    font-weight: bold;
+    color: #4ade80;
+}
+
+/* Confetti Canvas */
+.confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}

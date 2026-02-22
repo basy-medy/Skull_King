@@ -52,6 +52,7 @@ class SkullKingGame {
         document.getElementById('startGame').addEventListener('click', () => this.startGame());
         document.getElementById('nextRound').addEventListener('click', () => this.nextRound());
         document.getElementById('resetGame').addEventListener('click', () => this.resetGame());
+        document.getElementById('closeWinnerModal').addEventListener('click', () => this.resetGame());
     }
 
     addPlayer() {
@@ -223,9 +224,181 @@ class SkullKingGame {
         });
 
         this.currentRound++;
+        
+        // Check if game has ended (after round 10)
+        if (this.currentRound > 10) {
+            this.endGame();
+            return;
+        }
+        
         this.createPlayerInputs();
         this.updateDisplay();
         this.drawGraph();
+    }
+
+    endGame() {
+        // Sort players by score to find winner
+        const sortedPlayers = [...this.players].sort((a, b) => b.totalScore - a.totalScore);
+        const winner = sortedPlayers[0];
+        
+        // Show winner modal
+        this.showWinnerModal(sortedPlayers, winner);
+        
+        // Start confetti animation
+        this.startConfetti();
+        
+        // Play winning sound
+        this.playWinningSound();
+    }
+
+    showWinnerModal(sortedPlayers, winner) {
+        const modal = document.getElementById('winnerModal');
+        const winnerNameEl = document.getElementById('winnerName');
+        const winnerScoreEl = document.getElementById('winnerScore');
+        const rankingsEl = document.getElementById('winnerRankings');
+        
+        winnerNameEl.textContent = winner.name;
+        winnerNameEl.style.color = winner.color;
+        winnerScoreEl.textContent = `${winner.totalScore} points`;
+        
+        // Build rankings list
+        rankingsEl.innerHTML = '';
+        sortedPlayers.forEach((player, index) => {
+            const rankItem = document.createElement('div');
+            rankItem.className = 'winner-rank-item' + (index === 0 ? ' winner' : '');
+            
+            const rankEmoji = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+            
+            rankItem.innerHTML = `
+                <span class="winner-rank-position">${rankEmoji}</span>
+                <span class="winner-rank-player" style="color: ${player.color};">● ${player.name}</span>
+                <span class="winner-rank-score">${player.totalScore}</span>
+            `;
+            rankingsEl.appendChild(rankItem);
+        });
+        
+        modal.style.display = 'flex';
+    }
+
+    startConfetti() {
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Confetti particles
+        const particles = [];
+        const particleCount = 150;
+        const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'];
+        
+        // Create particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 10 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 5 - 2.5,
+                oscillation: Math.random() * 2,
+                oscillationSpeed: Math.random() * 0.05 + 0.02
+            });
+        }
+        
+        let animationId;
+        let startTime = Date.now();
+        
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            
+            // Stop after 8 seconds
+            if (elapsed > 8000) {
+                cancelAnimationFrame(animationId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                // Update position
+                p.y += p.speedY;
+                p.x += Math.sin(p.y * p.oscillationSpeed) * p.oscillation + p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                // Reset particle if it falls off screen
+                if (p.y > canvas.height) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
+                
+                // Draw particle
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+            });
+            
+            animationId = requestAnimationFrame(animate);
+        };
+        
+        animate();
+        
+        // Handle resize
+        const resizeHandler = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        window.addEventListener('resize', resizeHandler);
+        
+        // Cleanup resize listener after animation ends
+        setTimeout(() => {
+            window.removeEventListener('resize', resizeHandler);
+        }, 8000);
+    }
+
+    playWinningSound() {
+        // Create audio context for generating sound
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        
+        const audioCtx = new AudioContext();
+        
+        // Play a celebratory fanfare
+        const notes = [
+            { freq: 523.25, duration: 150, delay: 0 },      // C5
+            { freq: 659.25, duration: 150, delay: 150 },    // E5
+            { freq: 783.99, duration: 150, delay: 300 },    // G5
+            { freq: 1046.50, duration: 400, delay: 450 },   // C6 (high)
+            { freq: 783.99, duration: 200, delay: 900 },    // G5
+            { freq: 1046.50, duration: 600, delay: 1150 }   // C6 (final)
+        ];
+        
+        notes.forEach(note => {
+            setTimeout(() => {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.frequency.value = note.freq;
+                oscillator.type = 'square';
+                
+                // Envelope
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + note.duration / 1000);
+                
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + note.duration / 1000);
+            }, note.delay);
+        });
     }
 
     updateDisplay() {
@@ -413,12 +586,28 @@ class SkullKingGame {
     }
 
     resetGame() {
-        if (!confirm('Start a new game? This will reset all scores.')) {
-            return;
+        // Only show confirmation if game is in progress (not from winner modal)
+        if (this.currentRound <= 10 && this.players.length > 0) {
+            if (!confirm('Start a new game? This will reset all scores.')) {
+                return;
+            }
         }
 
         this.players = [];
         this.currentRound = 1;
+        
+        // Hide winner modal
+        const modal = document.getElementById('winnerModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        
+        // Clear confetti
+        const canvas = document.getElementById('confettiCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
         
         document.getElementById('setupSection').style.display = 'block';
         document.getElementById('gameSection').style.display = 'none';
