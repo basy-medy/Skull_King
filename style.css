@@ -4,27 +4,69 @@
     box-sizing: border-box;
 }
 
+/* IBM Colorblind-Safe Color Palette
+ * Source: IBM Design Library
+ * Colors: Blue (#648fff), Purple (#785ef0), Magenta (#dc267f), Orange (#fe6100), Yellow (#ffb000)
+ * These colors are distinguishable for people with color vision deficiencies
+ */
+
+:root {
+    /* IBM Colorblind-safe colors */
+    --ibm-blue: #648fff;
+    --ibm-purple: #785ef0;
+    --ibm-magenta: #dc267f;
+    --ibm-orange: #fe6100;
+    --ibm-yellow: #ffb000;
+    
+    /* Dark variants for better contrast */
+    --ibm-blue-dark: #3c6ae0;
+    --ibm-purple-dark: #5a3dd3;
+    --ibm-magenta-dark: #b01a5e;
+    --ibm-orange-dark: #cc4d00;
+    --ibm-yellow-dark: #cc8c00;
+    
+    /* Neutral colors with proper contrast */
+    --neutral-white: #ffffff;
+    --neutral-gray-10: #f4f4f4;
+    --neutral-gray-20: #e0e0e0;
+    --neutral-gray-50: #8d8d8d;
+    --neutral-gray-70: #525252;
+    --neutral-gray-100: #161616;
+    
+    /* Semantic colors with proper contrast */
+    --success-color: #198038;
+    --success-background: #d4edda;
+    --error-color: #da1e28;
+    --error-background: #f8d7da;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--neutral-gray-10);
     min-height: 100vh;
     padding: 20px;
+    color: var(--neutral-gray-100);
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
-    border-radius: 20px;
+    background: var(--neutral-white);
+    border-radius: 8px;
     padding: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--neutral-gray-20);
 }
 
 h1 {
     text-align: center;
-    color: #333;
+    color: var(--neutral-gray-100);
     margin-bottom: 30px;
     font-size: 2.5em;
+}
+
+h2, h3 {
+    color: var(--neutral-gray-100);
 }
 
 .setup-section {
@@ -32,7 +74,7 @@ h1 {
 }
 
 .setup-section h2 {
-    color: #333;
+    color: var(--neutral-gray-100);
     margin-bottom: 20px;
 }
 
@@ -45,15 +87,22 @@ h1 {
 
 .player-setup input {
     padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    border: 2px solid var(--neutral-gray-50);
+    border-radius: 4px;
     font-size: 1.1em;
     width: 250px;
+    color: var(--neutral-gray-100);
+    background: var(--neutral-white);
 }
 
 .player-setup input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--ibm-blue);
+    box-shadow: 0 0 0 3px rgba(100, 143, 255, 0.3);
+}
+
+.player-setup input::placeholder {
+    color: var(--neutral-gray-50);
 }
 
 .player-list {
@@ -68,38 +117,54 @@ h1 {
 .player-tag {
     padding: 10px 20px;
     border-radius: 20px;
-    color: white;
+    color: var(--neutral-white);
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 10px;
+    /* Ensure text contrast - dark text on light backgrounds */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .player-tag button {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
     border: none;
-    color: white;
+    color: var(--neutral-white);
     width: 20px;
     height: 20px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.player-tag button:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .btn-start {
     padding: 15px 40px;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 1.2em;
     font-weight: 600;
     cursor: pointer;
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    color: white;
-    transition: transform 0.2s;
+    background: var(--ibm-blue-dark);
+    color: var(--neutral-white);
+    transition: transform 0.2s, background-color 0.2s;
 }
 
 .btn-start:hover {
-    transform: scale(1.05);
+    background: var(--ibm-blue);
+    transform: translateY(-2px);
+}
+
+.btn-start:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 143, 255, 0.4);
 }
 
 .game-section {
@@ -121,26 +186,27 @@ h1 {
 }
 
 .round-info h2 {
-    color: #333;
+    color: var(--neutral-gray-100);
     margin: 0;
 }
 
 .leaderboard {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--neutral-gray-100);
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 30px;
-    color: white;
+    color: var(--neutral-white);
 }
 
 .leaderboard h3 {
     margin-bottom: 15px;
+    color: var(--neutral-white);
 }
 
 .leaderboard-item {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     padding: 12px 15px;
-    border-radius: 8px;
+    border-radius: 4px;
     margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
@@ -165,17 +231,19 @@ h1 {
 .leaderboard-score {
     font-size: 1.3em;
     font-weight: bold;
+    color: var(--neutral-white);
 }
 
 .input-section {
-    background: #f8f9fa;
+    background: var(--neutral-gray-10);
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 30px;
+    border: 1px solid var(--neutral-gray-20);
 }
 
 .input-section h3 {
-    color: #333;
+    color: var(--neutral-gray-100);
     margin-bottom: 15px;
 }
 
@@ -186,15 +254,18 @@ h1 {
 }
 
 .player-input-card {
-    background: white;
+    background: var(--neutral-white);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 4px;
     border-left: 4px solid;
+    border-top: 1px solid var(--neutral-gray-20);
+    border-right: 1px solid var(--neutral-gray-20);
+    border-bottom: 1px solid var(--neutral-gray-20);
 }
 
 .player-input-card h4 {
     margin: 0 0 10px 0;
-    color: #333;
+    color: var(--neutral-gray-100);
 }
 
 .input-row {
@@ -211,46 +282,66 @@ h1 {
 
 .input-group label {
     font-weight: 600;
-    color: #555;
+    color: var(--neutral-gray-70);
     font-size: 0.85em;
 }
 
 .input-group input {
     padding: 10px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    border: 2px solid var(--neutral-gray-50);
+    border-radius: 4px;
     font-size: 1em;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    color: var(--neutral-gray-100);
+    background: var(--neutral-white);
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--ibm-blue);
+    box-shadow: 0 0 0 3px rgba(100, 143, 255, 0.3);
+}
+
+.input-group input::placeholder {
+    color: var(--neutral-gray-50);
 }
 
 .btn-primary, .btn-secondary {
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 1em;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--ibm-blue-dark);
+    color: var(--neutral-white);
 }
 
 .btn-secondary {
-    background: #e0e0e0;
-    color: #555;
+    background: var(--neutral-gray-20);
+    color: var(--neutral-gray-100);
 }
 
-.btn-primary:hover, .btn-secondary:hover {
+.btn-primary:hover {
+    background: var(--ibm-blue);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:hover {
+    background: var(--neutral-gray-50);
+    color: var(--neutral-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:focus, .btn-secondary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 143, 255, 0.4);
 }
 
 .btn-primary:active, .btn-secondary:active {
@@ -260,18 +351,27 @@ h1 {
 .player-score-display {
     margin-top: 10px;
     font-size: 0.9em;
-    color: #666;
+    font-weight: 600;
+}
+
+.player-score-display.positive {
+    color: var(--success-color);
+}
+
+.player-score-display.negative {
+    color: var(--error-color);
 }
 
 .graph-container {
     margin-bottom: 30px;
-    background: #f8f9fa;
+    background: var(--neutral-gray-10);
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--neutral-gray-20);
 }
 
 .graph-container h2 {
-    color: #333;
+    color: var(--neutral-gray-100);
     margin-bottom: 15px;
     font-size: 1.5em;
 }
@@ -279,18 +379,20 @@ h1 {
 #scoreGraph {
     width: 100%;
     height: 300px;
-    background: white;
-    border-radius: 8px;
+    background: var(--neutral-white);
+    border-radius: 4px;
+    border: 1px solid var(--neutral-gray-20);
 }
 
 .history {
-    background: #f8f9fa;
+    background: var(--neutral-gray-10);
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--neutral-gray-20);
 }
 
 .history h3 {
-    color: #333;
+    color: var(--neutral-gray-100);
     margin-bottom: 15px;
 }
 
@@ -301,30 +403,34 @@ h1 {
 }
 
 .history-item {
-    background: white;
+    background: var(--neutral-white);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--neutral-gray-20);
+    border-left-width: 4px;
 }
 
+/* Success/Fail styles with proper contrast */
 .history-item.success {
-    border-left: 4px solid #4caf50;
+    background: var(--success-background);
+    border-left-color: var(--success-color);
 }
 
 .history-item.fail {
-    border-left: 4px solid #f44336;
+    background: var(--error-background);
+    border-left-color: var(--error-color);
 }
 
 .history-round {
     font-weight: bold;
-    color: #667eea;
+    color: var(--neutral-gray-100);
 }
 
 .history-details {
-    color: #666;
+    color: var(--neutral-gray-70);
 }
 
 .history-score {
@@ -333,14 +439,34 @@ h1 {
 }
 
 .history-score.positive {
-    color: #4caf50;
+    color: var(--success-color);
 }
 
 .history-score.negative {
-    color: #f44336;
+    color: var(--error-color);
+}
+
+/* Player color indicators with accessible contrast */
+.player-indicator {
+    font-weight: bold;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    color: var(--neutral-gray-50);
+    padding: 20px;
 }
 
 @media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+    
     .input-section {
         flex-direction: column;
         align-items: stretch;
@@ -352,5 +478,48 @@ h1 {
     
     .stats {
         flex-direction: column;
+    }
+    
+    .player-setup {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .player-setup input {
+        width: 100%;
+    }
+    
+    .round-info {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .round-info button {
+        width: 100%;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btn-primary,
+    .btn-secondary {
+        border: 2px solid currentColor;
+    }
+    
+    .player-tag {
+        border: 2px solid var(--neutral-gray-100);
+    }
+    
+    .history-item {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
