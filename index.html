@@ -5,62 +5,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skull King Score Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>💀 Skull King Score Tracker</h1>
-        
-        <div id="setupSection" class="setup-section">
-            <h2>Setup Players</h2>
-            <div class="player-setup">
-                <input type="text" id="playerName" placeholder="Player name" maxlength="20">
-                <button id="addPlayer" class="btn-primary">Add Player</button>
+    <!-- Background fluid shapes -->
+    <div class="fluid-shape fluid-shape-1"></div>
+    <div class="fluid-shape fluid-shape-2"></div>
+    <div class="fluid-shape fluid-shape-3"></div>
+    
+    <main class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-mark">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="3"/>
+                    <path d="M24 8V24L32 32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="24" cy="24" r="4" fill="currentColor"/>
+                </svg>
             </div>
-            <div id="playerList" class="player-list"></div>
-            <button id="startGame" class="btn-start" style="display: none;">Start Game</button>
-        </div>
+            <h1 class="app-title">Skull King</h1>
+            <p class="app-subtitle">Score Tracker</p>
+        </header>
 
-        <div id="gameSection" class="game-section" style="display: none;">
-            <div class="round-info">
-                <h2>Round <span id="currentRound">1</span></h2>
-                <button id="nextRound" class="btn-primary">Next Round</button>
-                <button id="resetGame" class="btn-secondary">New Game</button>
+        <!-- Setup Section -->
+        <section id="setupSection" class="section setup-section">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2 class="section-title">Setup Players</h2>
+            </div>
+            
+            <div class="input-module">
+                <div class="input-group-large">
+                    <label for="playerName" class="input-label">Player Name</label>
+                    <input type="text" id="playerName" class="input-field" placeholder="Enter name" maxlength="20" autocomplete="off">
+                </div>
+                <button id="addPlayer" class="btn btn-primary btn-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+                    </svg>
+                </button>
             </div>
 
-            <div class="leaderboard">
-                <h3>🏆 Leaderboard</h3>
-                <div id="leaderboardList"></div>
+            <div id="playerList" class="player-grid"></div>
+            
+            <div class="action-bar">
+                <button id="startGame" class="btn btn-start" style="display: none;">
+                    <span class="btn-text">Start Game</span>
+                    <span class="btn-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Game Section -->
+        <section id="gameSection" class="section game-section" style="display: none;">
+            <!-- Round Header -->
+            <div class="round-header">
+                <div class="round-badge">
+                    <span class="round-label">Round</span>
+                    <span id="currentRound" class="round-number">1</span>
+                    <span class="round-total">/ 10</span>
+                </div>
+                <div class="round-actions">
+                    <button id="resetGame" class="btn btn-text">New Game</button>
+                    <button id="nextRound" class="btn btn-primary">
+                        <span class="btn-text">Next Round</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="input-section">
-                <h3>Enter Scores for Round <span id="inputRoundNumber">1</span></h3>
-                <div id="playerInputs"></div>
+            <!-- Leaderboard Module -->
+            <div class="module module-dark">
+                <div class="module-header">
+                    <h3 class="module-title">Leaderboard</h3>
+                    <div class="module-indicator"></div>
+                </div>
+                <div id="leaderboardList" class="leaderboard-list"></div>
             </div>
 
-            <div class="graph-container">
-                <h2>Score Progress</h2>
-                <canvas id="scoreGraph"></canvas>
+            <!-- Score Input Module -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="section-number">02</span>
+                    <h3 class="module-title">Enter Scores — Round <span id="inputRoundNumber">1</span></h3>
+                </div>
+                <div id="playerInputs" class="score-grid"></div>
             </div>
 
-            <div class="history">
-                <h3>Round History</h3>
-                <div id="historyList"></div>
+            <!-- Graph Module -->
+            <div class="module module-visual">
+                <div class="module-header">
+                    <h3 class="module-title">Score Progress</h3>
+                </div>
+                <div class="graph-container">
+                    <canvas id="scoreGraph"></canvas>
+                </div>
             </div>
-        </div>
-    </div>
+
+            <!-- History Module -->
+            <div class="module">
+                <div class="module-header">
+                    <h3 class="module-title">Round History</h3>
+                </div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </section>
+    </main>
 
     <!-- Winner Modal -->
-    <div id="winnerModal" class="winner-modal" style="display: none;">
-        <div class="winner-modal-content">
-            <div class="winner-crown">👑</div>
-            <h2 class="winner-title">GAME OVER!</h2>
-            <div class="winner-announcement">
-                <span class="winner-label">WINNER</span>
+    <div id="winnerModal" class="modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-visual">
+                <div class="winner-icon">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="3"/>
+                        <path d="M32 12v20l12 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="32" cy="32" r="6" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="modal-header">
+                <span class="modal-label">Game Complete</span>
+                <h2 class="modal-title">Winner</h2>
+            </div>
+            <div class="winner-display">
                 <span id="winnerName" class="winner-name"></span>
                 <span id="winnerScore" class="winner-score"></span>
             </div>
-            <div class="winner-rankings" id="winnerRankings"></div>
-            <button id="closeWinnerModal" class="btn-primary">Play Again</button>
+            <div id="winnerRankings" class="rankings-list"></div>
+            <button id="closeWinnerModal" class="btn btn-primary btn-full">
+                <span class="btn-text">Play Again</span>
+            </button>
         </div>
     </div>
 

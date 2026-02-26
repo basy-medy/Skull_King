@@ -1,45 +1,34 @@
+/**
+ * Skull King Score Tracker
+ * Industrial Scandinavian Design
+ * Using IBM Color Blind Safe Palette
+ */
+
 class SkullKingGame {
     constructor() {
         this.players = [];
         this.currentRound = 1;
         
-        /* IBM Colorblind-Safe Color Palette
-         * Source: IBM Design Library
-         * These colors are carefully selected to be distinguishable by people 
-         * with various types of color vision deficiencies (protanopia, deuteranopia, tritanopia)
-         * 
-         * Color order optimized for maximum distinction:
-         * 1. Blue (#648fff) - Most visible to all color vision types
-         * 2. Orange (#fe6100) - High contrast with blue
-         * 3. Magenta (#dc267f) - Distinct from both blue and orange
-         * 4. Purple (#785ef0) - Distinct middle ground
-         * 5. Yellow (#ffb000) - Bright, distinct
+        /* IBM Color Blind Safe Palette
+         * Optimized for maximum distinction across all color vision types
          */
         this.colors = [
-            '#648fff', // IBM Blue
-            '#fe6100', // IBM Orange
-            '#dc267f', // IBM Magenta
-            '#785ef0', // IBM Purple
-            '#ffb000', // IBM Yellow
+            '#648fff', // IBM Blue - Most visible to all
+            '#fe6100', // IBM Orange - High contrast with blue
+            '#dc267f', // IBM Magenta - Distinct from blue/orange
+            '#785ef0', // IBM Purple - Middle ground distinct
+            '#009d9a', // IBM Teal - Fresh distinct option
+            '#ffb000', // IBM Yellow - Bright accent
         ];
         
-        /* Darker variants for text/foreground use to ensure WCAG AA contrast */
         this.darkColors = [
             '#3c6ae0', // Dark Blue
             '#cc4d00', // Dark Orange
             '#b01a5e', // Dark Magenta
             '#5a3dd3', // Dark Purple
+            '#007d79', // Dark Teal
             '#cc8c00', // Dark Yellow
         ];
-        
-        /* Accessible semantic colors with proper contrast ratios */
-        this.semanticColors = {
-            success: '#198038', // Dark green with 7:1 contrast on white
-            error: '#da1e28',   // Dark red with 7:1 contrast on white
-            text: '#161616',    // Near-black with maximum readability
-            textMuted: '#525252', // Gray for secondary text (7:1 contrast)
-            textLight: '#8d8d8d', // Lighter gray for placeholders
-        };
         
         this.attachEventListeners();
     }
@@ -60,12 +49,12 @@ class SkullKingGame {
         const name = nameInput.value.trim();
 
         if (!name) {
-            alert('Please enter a player name!');
+            this.showToast('Please enter a player name');
             return;
         }
 
         if (this.players.some(p => p.name === name)) {
-            alert('Player name already exists!');
+            this.showToast('Player name already exists');
             return;
         }
 
@@ -84,7 +73,9 @@ class SkullKingGame {
         nameInput.focus();
 
         if (this.players.length >= 2) {
-            document.getElementById('startGame').style.display = 'block';
+            const startBtn = document.getElementById('startGame');
+            startBtn.style.display = 'inline-flex';
+            startBtn.classList.add('animate-in');
         }
     }
 
@@ -104,12 +95,10 @@ class SkullKingGame {
         this.players.forEach((player, index) => {
             const tag = document.createElement('div');
             tag.className = 'player-tag';
-            tag.style.backgroundColor = player.color;
-            // Ensure text is readable by using dark text on lighter backgrounds
-            tag.style.color = '#ffffff';
             tag.innerHTML = `
-                ${player.name}
-                <button onclick="game.removePlayer(${index})" aria-label="Remove ${player.name}">×</button>
+                <span class="player-tag-color" style="background-color: ${player.color};"></span>
+                <span class="player-tag-name">${player.name}</span>
+                <button class="player-tag-remove" onclick="game.removePlayer(${index})" aria-label="Remove ${player.name}">×</button>
             `;
             playerList.appendChild(tag);
         });
@@ -117,17 +106,26 @@ class SkullKingGame {
 
     startGame() {
         if (this.players.length < 2) {
-            alert('Need at least 2 players to start!');
+            this.showToast('Need at least 2 players to start');
             return;
         }
 
-        document.getElementById('setupSection').style.display = 'none';
-        document.getElementById('gameSection').style.display = 'block';
+        // Animate transition
+        const setupSection = document.getElementById('setupSection');
+        const gameSection = document.getElementById('gameSection');
         
-        this.createPlayerInputs();
-        this.updateDisplay();
-        this.initCanvas();
-        this.drawGraph();
+        setupSection.style.animation = 'fade-out 0.3s ease forwards';
+        
+        setTimeout(() => {
+            setupSection.style.display = 'none';
+            gameSection.style.display = 'block';
+            gameSection.style.animation = 'module-in 0.5s ease-out forwards';
+            
+            this.createPlayerInputs();
+            this.updateDisplay();
+            this.initCanvas();
+            this.drawGraph();
+        }, 300);
     }
 
     createPlayerInputs() {
@@ -136,49 +134,49 @@ class SkullKingGame {
 
         this.players.forEach((player, index) => {
             const card = document.createElement('div');
-            card.className = 'player-input-card';
-            card.style.borderLeftColor = player.color;
+            card.className = 'score-card';
             card.innerHTML = `
-                <h4>${player.name}</h4>
-                <div class="input-row">
-                    <div class="input-group">
+                <div class="score-card-header">
+                    <span class="score-card-color" style="background-color: ${player.color};"></span>
+                    <span class="score-card-name">${player.name}</span>
+                </div>
+                <div class="score-inputs">
+                    <div class="score-input-group">
                         <label for="bet-${index}">Bet</label>
-                        <input type="number" id="bet-${index}" min="0" max="10" placeholder="0-10" aria-label="Bet for ${player.name}">
+                        <input type="number" id="bet-${index}" class="score-input" min="0" max="10" placeholder="0">
                     </div>
-                    <div class="input-group">
+                    <div class="score-input-group">
                         <label for="tricks-${index}">Won</label>
-                        <input type="number" id="tricks-${index}" min="0" max="10" placeholder="0-10" aria-label="Tricks won for ${player.name}">
+                        <input type="number" id="tricks-${index}" class="score-input" min="0" max="10" placeholder="0">
                     </div>
                 </div>
-                <div class="player-score-display" id="score-display-${index}"></div>
+                <div class="score-preview" id="score-preview-${index}"></div>
             `;
             container.appendChild(card);
 
             const betInput = document.getElementById(`bet-${index}`);
             const tricksInput = document.getElementById(`tricks-${index}`);
             
-            betInput.addEventListener('input', () => this.updateScoreDisplay(index));
-            tricksInput.addEventListener('input', () => this.updateScoreDisplay(index));
+            betInput.addEventListener('input', () => this.updateScorePreview(index));
+            tricksInput.addEventListener('input', () => this.updateScorePreview(index));
         });
     }
 
-    updateScoreDisplay(playerIndex) {
+    updateScorePreview(playerIndex) {
         const bet = parseInt(document.getElementById(`bet-${playerIndex}`).value);
         const tricks = parseInt(document.getElementById(`tricks-${playerIndex}`).value);
-        const display = document.getElementById(`score-display-${playerIndex}`);
+        const preview = document.getElementById(`score-preview-${playerIndex}`);
 
         if (isNaN(bet) || isNaN(tricks)) {
-            display.textContent = '';
-            display.className = 'player-score-display';
+            preview.classList.remove('visible');
             return;
         }
 
         const score = this.calculateScore(bet, tricks);
         const newTotal = this.players[playerIndex].totalScore + score;
-        display.textContent = `This round: ${score >= 0 ? '+' : ''}${score} (New total: ${newTotal})`;
         
-        // Use semantic color classes for proper contrast
-        display.className = 'player-score-display ' + (score >= 0 ? 'positive' : 'negative');
+        preview.textContent = `${score >= 0 ? '+' : ''}${score} → Total: ${newTotal}`;
+        preview.className = `score-preview ${score >= 0 ? 'positive' : 'negative'} visible`;
     }
 
     calculateScore(bet, tricks) {
@@ -205,7 +203,7 @@ class SkullKingGame {
         });
 
         if (!allValid) {
-            alert('Please enter valid scores (0-10) for all players!');
+            this.showToast('Please enter valid scores (0-10) for all players');
             return;
         }
 
@@ -225,7 +223,6 @@ class SkullKingGame {
 
         this.currentRound++;
         
-        // Check if game has ended (after round 10)
         if (this.currentRound > 10) {
             this.endGame();
             return;
@@ -234,20 +231,17 @@ class SkullKingGame {
         this.createPlayerInputs();
         this.updateDisplay();
         this.drawGraph();
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     endGame() {
-        // Sort players by score to find winner
         const sortedPlayers = [...this.players].sort((a, b) => b.totalScore - a.totalScore);
         const winner = sortedPlayers[0];
         
-        // Show winner modal
         this.showWinnerModal(sortedPlayers, winner);
-        
-        // Start confetti animation
         this.startConfetti();
-        
-        // Play winning sound
         this.playWinningSound();
     }
 
@@ -261,18 +255,20 @@ class SkullKingGame {
         winnerNameEl.style.color = winner.color;
         winnerScoreEl.textContent = `${winner.totalScore} points`;
         
-        // Build rankings list
         rankingsEl.innerHTML = '';
         sortedPlayers.forEach((player, index) => {
             const rankItem = document.createElement('div');
-            rankItem.className = 'winner-rank-item' + (index === 0 ? ' winner' : '');
+            rankItem.className = 'rankings-item' + (index === 0 ? ' winner' : '');
             
             const rankEmoji = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
             
             rankItem.innerHTML = `
-                <span class="winner-rank-position">${rankEmoji}</span>
-                <span class="winner-rank-player" style="color: ${player.color};">● ${player.name}</span>
-                <span class="winner-rank-score">${player.totalScore}</span>
+                <span class="rankings-position">${rankEmoji}</span>
+                <span class="rankings-player">
+                    <span class="rankings-color" style="background-color: ${player.color};"></span>
+                    ${player.name}
+                </span>
+                <span class="rankings-score">${player.totalScore}</span>
             `;
             rankingsEl.appendChild(rankItem);
         });
@@ -284,28 +280,30 @@ class SkullKingGame {
         const canvas = document.getElementById('confettiCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Set canvas size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        // Confetti particles
         const particles = [];
-        const particleCount = 150;
-        const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'];
+        const particleCount = 120;
         
-        // Create particles
+        // Use IBM color blind safe palette
+        const colors = [
+            '#648fff', '#fe6100', '#dc267f', 
+            '#785ef0', '#009d9a', '#ffb000'
+        ];
+        
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height - canvas.height,
-                size: Math.random() * 10 + 5,
+                size: Math.random() * 8 + 4,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                speedY: Math.random() * 3 + 2,
-                speedX: Math.random() * 2 - 1,
+                speedY: Math.random() * 2.5 + 1.5,
+                speedX: Math.random() * 1.5 - 0.75,
                 rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 5 - 2.5,
-                oscillation: Math.random() * 2,
-                oscillationSpeed: Math.random() * 0.05 + 0.02
+                rotationSpeed: Math.random() * 4 - 2,
+                wobble: Math.random() * Math.PI * 2,
+                wobbleSpeed: Math.random() * 0.03 + 0.02
             });
         }
         
@@ -315,8 +313,7 @@ class SkullKingGame {
         const animate = () => {
             const elapsed = Date.now() - startTime;
             
-            // Stop after 8 seconds
-            if (elapsed > 8000) {
+            if (elapsed > 6000) {
                 cancelAnimationFrame(animationId);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 return;
@@ -325,23 +322,28 @@ class SkullKingGame {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             particles.forEach(p => {
-                // Update position
                 p.y += p.speedY;
-                p.x += Math.sin(p.y * p.oscillationSpeed) * p.oscillation + p.speedX;
+                p.x += Math.sin(p.wobble) * 0.5 + p.speedX;
                 p.rotation += p.rotationSpeed;
+                p.wobble += p.wobbleSpeed;
                 
-                // Reset particle if it falls off screen
                 if (p.y > canvas.height) {
                     p.y = -20;
                     p.x = Math.random() * canvas.width;
                 }
                 
-                // Draw particle
                 ctx.save();
                 ctx.translate(p.x, p.y);
                 ctx.rotate((p.rotation * Math.PI) / 180);
                 ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                
+                // Draw rounded square
+                const s = p.size;
+                const r = s * 0.25;
+                ctx.beginPath();
+                ctx.roundRect(-s/2, -s/2, s, s, r);
+                ctx.fill();
+                
                 ctx.restore();
             });
             
@@ -350,34 +352,30 @@ class SkullKingGame {
         
         animate();
         
-        // Handle resize
         const resizeHandler = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         };
         window.addEventListener('resize', resizeHandler);
         
-        // Cleanup resize listener after animation ends
         setTimeout(() => {
             window.removeEventListener('resize', resizeHandler);
-        }, 8000);
+        }, 6000);
     }
 
     playWinningSound() {
-        // Create audio context for generating sound
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
         
         const audioCtx = new AudioContext();
         
-        // Play a celebratory fanfare
         const notes = [
-            { freq: 523.25, duration: 150, delay: 0 },      // C5
-            { freq: 659.25, duration: 150, delay: 150 },    // E5
-            { freq: 783.99, duration: 150, delay: 300 },    // G5
-            { freq: 1046.50, duration: 400, delay: 450 },   // C6 (high)
-            { freq: 783.99, duration: 200, delay: 900 },    // G5
-            { freq: 1046.50, duration: 600, delay: 1150 }   // C6 (final)
+            { freq: 523.25, duration: 120, delay: 0 },
+            { freq: 659.25, duration: 120, delay: 120 },
+            { freq: 783.99, duration: 120, delay: 240 },
+            { freq: 1046.50, duration: 350, delay: 380 },
+            { freq: 783.99, duration: 180, delay: 780 },
+            { freq: 1046.50, duration: 500, delay: 1000 }
         ];
         
         notes.forEach(note => {
@@ -389,10 +387,9 @@ class SkullKingGame {
                 gainNode.connect(audioCtx.destination);
                 
                 oscillator.frequency.value = note.freq;
-                oscillator.type = 'square';
+                oscillator.type = 'sine';
                 
-                // Envelope
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + note.duration / 1000);
                 
                 oscillator.start(audioCtx.currentTime);
@@ -416,18 +413,19 @@ class SkullKingGame {
         sortedPlayers.forEach((player, index) => {
             const item = document.createElement('div');
             item.className = 'leaderboard-item';
+            
+            const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
+            
             item.innerHTML = `
-                <span class="leaderboard-rank">${this.getRankEmoji(index)}</span>
-                <span class="leaderboard-name" style="color: ${player.color};">● ${player.name}</span>
+                <span class="leaderboard-rank">${rankEmoji}</span>
+                <div class="leaderboard-player">
+                    <span class="leaderboard-color" style="background-color: ${player.color};"></span>
+                    <span class="leaderboard-name">${player.name}</span>
+                </div>
                 <span class="leaderboard-score">${player.totalScore}</span>
             `;
             leaderboardList.appendChild(item);
         });
-    }
-
-    getRankEmoji(rank) {
-        const emojis = ['🥇', '🥈', '🥉'];
-        return emojis[rank] || `${rank + 1}.`;
     }
 
     updateHistory() {
@@ -435,15 +433,25 @@ class SkullKingGame {
         historyList.innerHTML = '';
 
         if (this.currentRound === 1) {
-            historyList.innerHTML = '<p class="empty-state">No rounds played yet</p>';
+            historyList.innerHTML = '<div class="empty-state">No rounds completed yet</div>';
             return;
         }
 
         for (let round = this.currentRound - 1; round >= 1; round--) {
             const roundDiv = document.createElement('div');
-            roundDiv.style.marginBottom = '20px';
-            roundDiv.innerHTML = `<h4 style="color: ${this.semanticColors.text}; margin-bottom: 10px;">Round ${round}</h4>`;
-
+            roundDiv.className = 'history-round';
+            
+            const roundHeader = document.createElement('div');
+            roundHeader.className = 'history-round-header';
+            roundHeader.innerHTML = `
+                <span class="history-round-number">R${round}</span>
+                <span class="history-round-title">Round ${round}</span>
+            `;
+            roundDiv.appendChild(roundHeader);
+            
+            const itemsContainer = document.createElement('div');
+            itemsContainer.className = 'history-items';
+            
             this.players.forEach(player => {
                 const roundData = player.rounds[round - 1];
                 if (roundData) {
@@ -451,21 +459,21 @@ class SkullKingGame {
                     item.className = `history-item ${roundData.bet === roundData.tricks ? 'success' : 'fail'}`;
                     
                     item.innerHTML = `
-                        <div>
-                            <span style="color: ${player.darkColor}; font-weight: bold;">● ${player.name}</span>
-                            <span class="history-details"> - Bet: ${roundData.bet}, Won: ${roundData.tricks}</span>
+                        <div class="history-player">
+                            <span class="history-color" style="background-color: ${player.darkColor};"></span>
+                            <span class="history-name">${player.name}</span>
+                            <span class="history-details">Bet ${roundData.bet} · Won ${roundData.tricks}</span>
                         </div>
-                        <div>
-                            <span class="history-score ${roundData.score >= 0 ? 'positive' : 'negative'}">
-                                ${roundData.score >= 0 ? '+' : ''}${roundData.score}
-                            </span>
-                        </div>
+                        <span class="history-score ${roundData.score >= 0 ? 'positive' : 'negative'}">
+                            ${roundData.score >= 0 ? '+' : ''}${roundData.score}
+                        </span>
                     `;
                     
-                    roundDiv.appendChild(item);
+                    itemsContainer.appendChild(item);
                 }
             });
-
+            
+            roundDiv.appendChild(itemsContainer);
             historyList.appendChild(roundDiv);
         }
     }
@@ -473,6 +481,10 @@ class SkullKingGame {
     initCanvas() {
         this.canvas = document.getElementById('scoreGraph');
         this.ctx = this.canvas.getContext('2d');
+        this.resizeCanvas();
+    }
+
+    resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
         const rect = this.canvas.getBoundingClientRect();
         this.canvas.width = rect.width * dpr;
@@ -490,16 +502,16 @@ class SkullKingGame {
         this.ctx.clearRect(0, 0, width, height);
 
         if (this.currentRound === 1) {
-            this.ctx.fillStyle = this.semanticColors.textMuted;
-            this.ctx.font = '16px Arial';
+            this.ctx.fillStyle = '#6f6f6f';
+            this.ctx.font = '500 14px Inter, sans-serif';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('No data yet. Complete the first round!', width / 2, height / 2);
+            this.ctx.fillText('Score data will appear after round 1', width / 2, height / 2);
             return;
         }
 
-        const padding = 50;
-        const graphWidth = width - 2 * padding;
-        const graphHeight = height - 2 * padding;
+        const padding = { top: 40, right: 30, bottom: 50, left: 50 };
+        const graphWidth = width - padding.left - padding.right;
+        const graphHeight = height - padding.top - padding.bottom;
 
         const allScores = this.players.flatMap(player => {
             const scores = [0];
@@ -514,29 +526,30 @@ class SkullKingGame {
         const scoreRange = maxScore - minScore || 100;
 
         // Draw grid lines
-        this.ctx.strokeStyle = '#e0e0e0';
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         this.ctx.lineWidth = 1;
-        for (let i = 0; i <= 5; i++) {
-            const y = padding + (graphHeight / 5) * i;
+        
+        for (let i = 0; i <= 4; i++) {
+            const y = padding.top + (graphHeight / 4) * i;
             this.ctx.beginPath();
-            this.ctx.moveTo(padding, y);
-            this.ctx.lineTo(width - padding, y);
+            this.ctx.moveTo(padding.left, y);
+            this.ctx.lineTo(width - padding.right, y);
             this.ctx.stroke();
         }
 
         // Draw zero line
-        const zeroY = padding + graphHeight * (1 - (0 - minScore) / scoreRange);
-        this.ctx.strokeStyle = this.semanticColors.textMuted;
+        const zeroY = padding.top + graphHeight * (1 - (0 - minScore) / scoreRange);
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
         this.ctx.lineWidth = 2;
-        this.ctx.setLineDash([5, 5]);
+        this.ctx.setLineDash([6, 6]);
         this.ctx.beginPath();
-        this.ctx.moveTo(padding, zeroY);
-        this.ctx.lineTo(width - padding, zeroY);
+        this.ctx.moveTo(padding.left, zeroY);
+        this.ctx.lineTo(width - padding.right, zeroY);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
 
         // Draw player lines
-        this.players.forEach(player => {
+        this.players.forEach((player, playerIndex) => {
             const scores = [0];
             player.rounds.forEach(round => {
                 scores.push(scores[scores.length - 1] + round.score);
@@ -544,11 +557,13 @@ class SkullKingGame {
 
             this.ctx.strokeStyle = player.color;
             this.ctx.lineWidth = 3;
+            this.ctx.lineCap = 'round';
+            this.ctx.lineJoin = 'round';
             this.ctx.beginPath();
 
             scores.forEach((score, index) => {
-                const x = padding + (graphWidth / (this.currentRound - 1)) * index;
-                const y = padding + graphHeight * (1 - (score - minScore) / scoreRange);
+                const x = padding.left + (graphWidth / (this.currentRound - 1)) * index;
+                const y = padding.top + graphHeight * (1 - (score - minScore) / scoreRange);
 
                 if (index === 0) {
                     this.ctx.moveTo(x, y);
@@ -561,34 +576,45 @@ class SkullKingGame {
 
             // Draw points
             scores.forEach((score, index) => {
-                const x = padding + (graphWidth / (this.currentRound - 1)) * index;
-                const y = padding + graphHeight * (1 - (score - minScore) / scoreRange);
+                const x = padding.left + (graphWidth / (this.currentRound - 1)) * index;
+                const y = padding.top + graphHeight * (1 - (score - minScore) / scoreRange);
 
-                this.ctx.fillStyle = '#ffffff';
+                this.ctx.fillStyle = '#161616';
                 this.ctx.beginPath();
-                this.ctx.arc(x, y, 5, 0, Math.PI * 2);
+                this.ctx.arc(x, y, 6, 0, Math.PI * 2);
                 this.ctx.fill();
 
                 this.ctx.strokeStyle = player.color;
                 this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, 5, 0, Math.PI * 2);
                 this.ctx.stroke();
             });
         });
 
-        // Draw x-axis labels
-        this.ctx.fillStyle = this.semanticColors.textMuted;
-        this.ctx.font = '12px Arial';
+        // Draw axis labels
+        this.ctx.fillStyle = '#8d8d8d';
+        this.ctx.font = '500 12px Inter, sans-serif';
         this.ctx.textAlign = 'center';
+        
         for (let i = 0; i < this.currentRound; i++) {
-            const x = padding + (graphWidth / (this.currentRound - 1)) * i;
-            this.ctx.fillText(`R${i}`, x, height - padding + 20);
+            const x = padding.left + (graphWidth / (this.currentRound - 1)) * i;
+            this.ctx.fillText(`R${i}`, x, height - padding.bottom + 20);
+        }
+
+        // Y-axis labels
+        this.ctx.textAlign = 'right';
+        this.ctx.fillStyle = '#6f6f6f';
+        for (let i = 0; i <= 4; i++) {
+            const value = maxScore - (scoreRange / 4) * i;
+            const y = padding.top + (graphHeight / 4) * i;
+            this.ctx.fillText(Math.round(value), padding.left - 12, y + 4);
         }
     }
 
     resetGame() {
-        // Only show confirmation if game is in progress (not from winner modal)
         if (this.currentRound <= 10 && this.players.length > 0) {
-            if (!confirm('Start a new game? This will reset all scores.')) {
+            if (!confirm('Start a new game? All scores will be reset.')) {
                 return;
             }
         }
@@ -596,32 +622,56 @@ class SkullKingGame {
         this.players = [];
         this.currentRound = 1;
         
-        // Hide winner modal
         const modal = document.getElementById('winnerModal');
         if (modal) {
             modal.style.display = 'none';
         }
         
-        // Clear confetti
         const canvas = document.getElementById('confettiCanvas');
         if (canvas) {
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         
-        document.getElementById('setupSection').style.display = 'block';
-        document.getElementById('gameSection').style.display = 'none';
+        const setupSection = document.getElementById('setupSection');
+        const gameSection = document.getElementById('gameSection');
+        
+        gameSection.style.display = 'none';
+        setupSection.style.display = 'block';
+        setupSection.style.animation = 'module-in 0.4s ease-out';
+        
         document.getElementById('startGame').style.display = 'none';
         document.getElementById('playerName').value = '';
         this.updatePlayerList();
     }
+
+    showToast(message) {
+        // Simple alert replacement - could be enhanced with a toast component
+        alert(message);
+    }
 }
 
+// Handle resize
 window.addEventListener('resize', () => {
     if (game && game.canvas) {
-        game.initCanvas();
+        game.resizeCanvas();
         game.drawGraph();
     }
 });
 
+// Initialize game
 const game = new SkullKingGame();
+
+// Add fade-out animation keyframes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fade-out {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .animate-in {
+        animation: tag-in 0.4s var(--ease-spring) forwards;
+    }
+`;
+document.head.appendChild(style);
