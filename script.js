@@ -1,7 +1,6 @@
 /**
  * Skull King Score Tracker
- * Industrial Scandinavian Design
- * Using IBM Color Blind Safe Palette
+ * Brutalist Tech Aesthetic
  */
 
 class SkullKingGame {
@@ -9,25 +8,25 @@ class SkullKingGame {
         this.players = [];
         this.currentRound = 1;
         
-        /* IBM Color Blind Safe Palette
-         * Optimized for maximum distinction across all color vision types
+        /* Brutalist Tech Color Palette
+         * High contrast colors for the brutalist aesthetic
          */
         this.colors = [
-            '#648fff', // IBM Blue - Most visible to all
-            '#fe6100', // IBM Orange - High contrast with blue
-            '#dc267f', // IBM Magenta - Distinct from blue/orange
-            '#785ef0', // IBM Purple - Middle ground distinct
-            '#009d9a', // IBM Teal - Fresh distinct option
-            '#ffb000', // IBM Yellow - Bright accent
+            '#0A0A0A', // Black
+            '#FF4D4D', // Red Coral
+            '#50C878', // Green Bright
+            '#404040', // Gray 70
+            '#D9D936', // Neon Yellow Dark
+            '#6b6b6b', // Gray 50
         ];
         
         this.darkColors = [
-            '#3c6ae0', // Dark Blue
-            '#cc4d00', // Dark Orange
-            '#b01a5e', // Dark Magenta
-            '#5a3dd3', // Dark Purple
-            '#007d79', // Dark Teal
-            '#cc8c00', // Dark Yellow
+            '#000000', // Dark Black
+            '#cc3d3d', // Dark Red
+            '#40a060', // Dark Green
+            '#2d2d2d', // Dark Gray
+            '#b8b82e', // Dark Yellow
+            '#525252', // Dark Gray 50
         ];
         
         this.attachEventListeners();
@@ -97,8 +96,8 @@ class SkullKingGame {
             tag.className = 'player-tag';
             tag.innerHTML = `
                 <span class="player-tag-color" style="background-color: ${player.color};"></span>
-                <span class="player-tag-name">${player.name}</span>
-                <button class="player-tag-remove" onclick="game.removePlayer(${index})" aria-label="Remove ${player.name}">×</button>
+                <span>${player.name}</span>
+                <button class="remove-btn" onclick="game.removePlayer(${index})" aria-label="Remove ${player.name}">×</button>
             `;
             playerList.appendChild(tag);
         });
@@ -119,7 +118,7 @@ class SkullKingGame {
         setTimeout(() => {
             setupSection.style.display = 'none';
             gameSection.style.display = 'block';
-            gameSection.style.animation = 'module-in 0.5s ease-out forwards';
+            gameSection.style.animation = 'fadeIn 0.5s ease-out forwards';
             
             this.createPlayerInputs();
             this.updateDisplay();
@@ -175,7 +174,7 @@ class SkullKingGame {
         const score = this.calculateScore(bet, tricks);
         const newTotal = this.players[playerIndex].totalScore + score;
         
-        preview.textContent = `${score >= 0 ? '+' : ''}${score} → Total: ${newTotal}`;
+        preview.textContent = `${score >= 0 ? '+' : ''}${score} → TOTAL: ${newTotal}`;
         preview.className = `score-preview ${score >= 0 ? 'positive' : 'negative'} visible`;
     }
 
@@ -252,28 +251,24 @@ class SkullKingGame {
         const rankingsEl = document.getElementById('winnerRankings');
         
         winnerNameEl.textContent = winner.name;
-        winnerNameEl.style.color = winner.color;
-        winnerScoreEl.textContent = `${winner.totalScore} points`;
+        winnerScoreEl.textContent = `${winner.totalScore} POINTS`;
         
         rankingsEl.innerHTML = '';
         sortedPlayers.forEach((player, index) => {
             const rankItem = document.createElement('div');
-            rankItem.className = 'rankings-item' + (index === 0 ? ' winner' : '');
+            rankItem.className = 'winner-rank-item' + (index === 0 ? ' winner' : '');
             
-            const rankEmoji = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+            const rankDisplay = index === 0 ? '★' : `${index + 1}.`;
             
             rankItem.innerHTML = `
-                <span class="rankings-position">${rankEmoji}</span>
-                <span class="rankings-player">
-                    <span class="rankings-color" style="background-color: ${player.color};"></span>
-                    ${player.name}
-                </span>
-                <span class="rankings-score">${player.totalScore}</span>
+                <span class="winner-rank-position">${rankDisplay}</span>
+                <span class="winner-rank-player">${player.name}</span>
+                <span class="winner-rank-score">${player.totalScore}</span>
             `;
             rankingsEl.appendChild(rankItem);
         });
         
-        modal.style.display = 'flex';
+        modal.classList.add('active');
     }
 
     startConfetti() {
@@ -286,10 +281,13 @@ class SkullKingGame {
         const particles = [];
         const particleCount = 120;
         
-        // Use IBM color blind safe palette
+        // Brutalist tech color palette
         const colors = [
-            '#648fff', '#fe6100', '#dc267f', 
-            '#785ef0', '#009d9a', '#ffb000'
+            '#F0F040', // Neon Yellow
+            '#FF4D4D', // Red Coral
+            '#50C878', // Green Bright
+            '#0A0A0A', // Black
+            '#FFFFFF', // White
         ];
         
         for (let i = 0; i < particleCount; i++) {
@@ -337,12 +335,9 @@ class SkullKingGame {
                 ctx.rotate((p.rotation * Math.PI) / 180);
                 ctx.fillStyle = p.color;
                 
-                // Draw rounded square
+                // Draw square (brutalist style - no rounded corners)
                 const s = p.size;
-                const r = s * 0.25;
-                ctx.beginPath();
-                ctx.roundRect(-s/2, -s/2, s, s, r);
-                ctx.fill();
+                ctx.fillRect(-s/2, -s/2, s, s);
                 
                 ctx.restore();
             });
@@ -387,7 +382,7 @@ class SkullKingGame {
                 gainNode.connect(audioCtx.destination);
                 
                 oscillator.frequency.value = note.freq;
-                oscillator.type = 'sine';
+                oscillator.type = 'square';
                 
                 gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + note.duration / 1000);
@@ -414,10 +409,10 @@ class SkullKingGame {
             const item = document.createElement('div');
             item.className = 'leaderboard-item';
             
-            const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
+            const rankDisplay = index === 0 ? '★' : `${index + 1}`;
             
             item.innerHTML = `
-                <span class="leaderboard-rank">${rankEmoji}</span>
+                <span class="leaderboard-rank">${rankDisplay}</span>
                 <div class="leaderboard-player">
                     <span class="leaderboard-color" style="background-color: ${player.color};"></span>
                     <span class="leaderboard-name">${player.name}</span>
@@ -433,7 +428,7 @@ class SkullKingGame {
         historyList.innerHTML = '';
 
         if (this.currentRound === 1) {
-            historyList.innerHTML = '<div class="empty-state">No rounds completed yet</div>';
+            historyList.innerHTML = '<div class="empty-state">NO ROUNDS COMPLETED YET</div>';
             return;
         }
 
@@ -445,7 +440,7 @@ class SkullKingGame {
             roundHeader.className = 'history-round-header';
             roundHeader.innerHTML = `
                 <span class="history-round-number">R${round}</span>
-                <span class="history-round-title">Round ${round}</span>
+                <span class="history-round-title">ROUND ${round}</span>
             `;
             roundDiv.appendChild(roundHeader);
             
@@ -462,7 +457,7 @@ class SkullKingGame {
                         <div class="history-player">
                             <span class="history-color" style="background-color: ${player.darkColor};"></span>
                             <span class="history-name">${player.name}</span>
-                            <span class="history-details">Bet ${roundData.bet} · Won ${roundData.tricks}</span>
+                            <span class="history-details">BET ${roundData.bet} · WON ${roundData.tricks}</span>
                         </div>
                         <span class="history-score ${roundData.score >= 0 ? 'positive' : 'negative'}">
                             ${roundData.score >= 0 ? '+' : ''}${roundData.score}
@@ -486,26 +481,26 @@ class SkullKingGame {
 
     resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
-        const rect = this.canvas.getBoundingClientRect();
+        const rect = this.canvas.parentElement.getBoundingClientRect();
         this.canvas.width = rect.width * dpr;
-        this.canvas.height = rect.height * dpr;
+        this.canvas.height = 320 * dpr;
         this.ctx.scale(dpr, dpr);
         this.canvas.style.width = rect.width + 'px';
-        this.canvas.style.height = rect.height + 'px';
+        this.canvas.style.height = '320px';
     }
 
     drawGraph() {
-        const rect = this.canvas.getBoundingClientRect();
+        const rect = this.canvas.parentElement.getBoundingClientRect();
         const width = rect.width;
-        const height = rect.height;
+        const height = 320;
         
         this.ctx.clearRect(0, 0, width, height);
 
         if (this.currentRound === 1) {
-            this.ctx.fillStyle = '#6f6f6f';
-            this.ctx.font = '500 14px Inter, sans-serif';
+            this.ctx.fillStyle = '#6b6b6b';
+            this.ctx.font = '500 14px "JetBrains Mono", monospace';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('Score data will appear after round 1', width / 2, height / 2);
+            this.ctx.fillText('SCORE DATA WILL APPEAR AFTER ROUND 1', width / 2, height / 2);
             return;
         }
 
@@ -526,7 +521,7 @@ class SkullKingGame {
         const scoreRange = maxScore - minScore || 100;
 
         // Draw grid lines
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
         this.ctx.lineWidth = 1;
         
         for (let i = 0; i <= 4; i++) {
@@ -539,7 +534,7 @@ class SkullKingGame {
 
         // Draw zero line
         const zeroY = padding.top + graphHeight * (1 - (0 - minScore) / scoreRange);
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
         this.ctx.lineWidth = 2;
         this.ctx.setLineDash([6, 6]);
         this.ctx.beginPath();
@@ -557,8 +552,8 @@ class SkullKingGame {
 
             this.ctx.strokeStyle = player.color;
             this.ctx.lineWidth = 3;
-            this.ctx.lineCap = 'round';
-            this.ctx.lineJoin = 'round';
+            this.ctx.lineCap = 'square';
+            this.ctx.lineJoin = 'miter';
             this.ctx.beginPath();
 
             scores.forEach((score, index) => {
@@ -579,22 +574,18 @@ class SkullKingGame {
                 const x = padding.left + (graphWidth / (this.currentRound - 1)) * index;
                 const y = padding.top + graphHeight * (1 - (score - minScore) / scoreRange);
 
-                this.ctx.fillStyle = '#161616';
-                this.ctx.beginPath();
-                this.ctx.arc(x, y, 6, 0, Math.PI * 2);
-                this.ctx.fill();
+                this.ctx.fillStyle = '#F5F2E8';
+                this.ctx.fillRect(x - 6, y - 6, 12, 12);
 
                 this.ctx.strokeStyle = player.color;
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.arc(x, y, 5, 0, Math.PI * 2);
-                this.ctx.stroke();
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(x - 5, y - 5, 10, 10);
             });
         });
 
         // Draw axis labels
-        this.ctx.fillStyle = '#8d8d8d';
-        this.ctx.font = '500 12px Inter, sans-serif';
+        this.ctx.fillStyle = '#6b6b6b';
+        this.ctx.font = '500 12px "JetBrains Mono", monospace';
         this.ctx.textAlign = 'center';
         
         for (let i = 0; i < this.currentRound; i++) {
@@ -604,7 +595,7 @@ class SkullKingGame {
 
         // Y-axis labels
         this.ctx.textAlign = 'right';
-        this.ctx.fillStyle = '#6f6f6f';
+        this.ctx.fillStyle = '#525252';
         for (let i = 0; i <= 4; i++) {
             const value = maxScore - (scoreRange / 4) * i;
             const y = padding.top + (graphHeight / 4) * i;
@@ -624,7 +615,7 @@ class SkullKingGame {
         
         const modal = document.getElementById('winnerModal');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('active');
         }
         
         const canvas = document.getElementById('confettiCanvas');
@@ -638,7 +629,7 @@ class SkullKingGame {
         
         gameSection.style.display = 'none';
         setupSection.style.display = 'block';
-        setupSection.style.animation = 'module-in 0.4s ease-out';
+        setupSection.style.animation = 'fadeIn 0.4s ease-out';
         
         document.getElementById('startGame').style.display = 'none';
         document.getElementById('playerName').value = '';
@@ -646,7 +637,6 @@ class SkullKingGame {
     }
 
     showToast(message) {
-        // Simple alert replacement - could be enhanced with a toast component
         alert(message);
     }
 }
@@ -671,7 +661,27 @@ style.textContent = `
     }
     
     .animate-in {
-        animation: tag-in 0.4s var(--ease-spring) forwards;
+        animation: tagEnter 0.4s var(--ease-spring) forwards;
     }
+    
+    /* Bar chart decoration for header */
+    .bar-chart-deco {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: 40px;
+    }
+    
+    .bar-chart-deco .bar {
+        background: var(--white);
+        width: 8px;
+        transition: height 0.3s ease;
+    }
+    
+    .bar-chart-deco .bar:nth-child(1) { height: 60%; }
+    .bar-chart-deco .bar:nth-child(2) { height: 80%; }
+    .bar-chart-deco .bar:nth-child(3) { height: 40%; }
+    .bar-chart-deco .bar:nth-child(4) { height: 100%; }
+    .bar-chart-deco .bar:nth-child(5) { height: 70%; }
 `;
 document.head.appendChild(style);

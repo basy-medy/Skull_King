@@ -3,145 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skull King Score Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SKULL KING // SCORE TRACKER</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Background fluid shapes -->
-    <div class="fluid-shape fluid-shape-1"></div>
-    <div class="fluid-shape fluid-shape-2"></div>
-    <div class="fluid-shape fluid-shape-3"></div>
-    
-    <main class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo-mark">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="3"/>
-                    <path d="M24 8V24L32 32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="24" cy="24" r="4" fill="currentColor"/>
-                </svg>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="page-header">
+            <div class="bar-chart-deco" style="position: absolute; bottom: 20px; left: var(--space-6); opacity: 0.3;">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
-            <h1 class="app-title">Skull King</h1>
-            <p class="app-subtitle">Score Tracker</p>
+            <h1>SKULL KING</h1>
+            <p class="subtitle">// PIRATE TRICK-TAKING SCORE TRACKER</p>
         </header>
 
         <!-- Setup Section -->
-        <section id="setupSection" class="section setup-section">
-            <div class="section-header">
-                <span class="section-number">01</span>
-                <h2 class="section-title">Setup Players</h2>
-            </div>
-            
-            <div class="input-module">
-                <div class="input-group-large">
-                    <label for="playerName" class="input-label">Player Name</label>
-                    <input type="text" id="playerName" class="input-field" placeholder="Enter name" maxlength="20" autocomplete="off">
+        <section id="setupSection" class="section" style="background: var(--cream);">
+            <div class="setup-section">
+                <div class="bar-chart-deco" style="justify-content: center; margin-bottom: var(--space-4); opacity: 0.4;">
+                    <div class="bar" style="height: 30px;"></div>
+                    <div class="bar" style="height: 50px;"></div>
+                    <div class="bar" style="height: 25px;"></div>
+                    <div class="bar" style="height: 40px;"></div>
+                    <div class="bar" style="height: 60px;"></div>
                 </div>
-                <button id="addPlayer" class="btn btn-primary btn-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div id="playerList" class="player-grid"></div>
-            
-            <div class="action-bar">
-                <button id="startGame" class="btn btn-start" style="display: none;">
-                    <span class="btn-text">Start Game</span>
-                    <span class="btn-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+                <h2 style="text-align: center; margin-bottom: var(--space-2); font-family: var(--font-mono);">NEW GAME //</h2>
+                <p style="text-align: center; color: var(--gray-50); margin-bottom: var(--space-8); font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono);">ADD PLAYERS TO BEGIN TRACKING</p>
+                
+                <div class="input-module">
+                    <div class="input-group-large">
+                        <label for="playerName" class="input-label">Player Name</label>
+                        <input type="text" id="playerName" class="input" placeholder="ENTER NAME" maxlength="20" autocomplete="off" style="text-transform: uppercase;">
+                    </div>
+                    <button id="addPlayer" class="btn btn-primary btn-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                    </span>
-                </button>
+                    </button>
+                </div>
+                
+                <div id="playerList" class="player-list"></div>
+                
+                <div class="action-bar">
+                    <button id="startGame" class="btn btn-accent btn-lg" style="display: none;">
+                        START GAME
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
 
         <!-- Game Section -->
-        <section id="gameSection" class="section game-section" style="display: none;">
-            <!-- Round Header -->
-            <div class="round-header">
-                <div class="round-badge">
-                    <span class="round-label">Round</span>
-                    <span id="currentRound" class="round-number">1</span>
-                    <span class="round-total">/ 10</span>
+        <section id="gameSection" class="section" style="display: none; background: var(--cream);">
+            <div class="game-section">
+                <!-- Round Header -->
+                <div class="round-header">
+                    <div class="round-badge">
+                        <span class="round-label">Round</span>
+                        <span id="currentRound" class="round-number">1</span>
+                        <span class="round-total">/ 10</span>
+                    </div>
+                    <div class="round-actions">
+                        <button id="resetGame" class="btn btn-secondary">NEW GAME</button>
+                        <button id="nextRound" class="btn btn-primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            NEXT ROUND
+                        </button>
+                    </div>
                 </div>
-                <div class="round-actions">
-                    <button id="resetGame" class="btn btn-text">New Game</button>
-                    <button id="nextRound" class="btn btn-primary">
-                        <span class="btn-text">Next Round</span>
-                    </button>
-                </div>
-            </div>
 
-            <!-- Leaderboard Module -->
-            <div class="module module-dark">
-                <div class="module-header">
-                    <h3 class="module-title">Leaderboard</h3>
-                    <div class="module-indicator"></div>
+                <!-- Leaderboard Module -->
+                <div class="module module-dark">
+                    <div class="module-header">
+                        <h3 class="module-title">CURRENT STANDINGS //</h3>
+                        <div class="module-indicator"></div>
+                    </div>
+                    <div id="leaderboardList" class="leaderboard-list"></div>
                 </div>
-                <div id="leaderboardList" class="leaderboard-list"></div>
-            </div>
 
-            <!-- Score Input Module -->
-            <div class="module">
-                <div class="module-header">
-                    <span class="section-number">02</span>
-                    <h3 class="module-title">Enter Scores — Round <span id="inputRoundNumber">1</span></h3>
+                <!-- Score Input Module -->
+                <div class="module">
+                    <div class="module-header">
+                        <h3 class="module-title">ENTER SCORES — ROUND <span id="inputRoundNumber">1</span> //</h3>
+                    </div>
+                    <div id="playerInputs" class="score-grid"></div>
                 </div>
-                <div id="playerInputs" class="score-grid"></div>
-            </div>
 
-            <!-- Graph Module -->
-            <div class="module module-visual">
-                <div class="module-header">
-                    <h3 class="module-title">Score Progress</h3>
+                <!-- Graph Module -->
+                <div class="module module-visual">
+                    <div class="module-header">
+                        <h3 class="module-title">SCORE PROGRESS //</h3>
+                    </div>
+                    <div class="graph-container" style="padding: 0; border: none; box-shadow: none;">
+                        <canvas id="scoreGraph"></canvas>
+                    </div>
                 </div>
-                <div class="graph-container">
-                    <canvas id="scoreGraph"></canvas>
-                </div>
-            </div>
 
-            <!-- History Module -->
-            <div class="module">
-                <div class="module-header">
-                    <h3 class="module-title">Round History</h3>
+                <!-- History Module -->
+                <div class="module">
+                    <div class="module-header">
+                        <h3 class="module-title">ROUND HISTORY //</h3>
+                    </div>
+                    <div id="historyList" class="history-list"></div>
                 </div>
-                <div id="historyList" class="history-list"></div>
             </div>
         </section>
-    </main>
+    </div>
 
     <!-- Winner Modal -->
-    <div id="winnerModal" class="modal" style="display: none;">
-        <div class="modal-backdrop"></div>
+    <div id="winnerModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-visual">
-                <div class="winner-icon">
-                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="3"/>
-                        <path d="M32 12v20l12 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                        <circle cx="32" cy="32" r="6" fill="currentColor"/>
-                    </svg>
-                </div>
-            </div>
             <div class="modal-header">
-                <span class="modal-label">Game Complete</span>
-                <h2 class="modal-title">Winner</h2>
+                <div class="winner-crown">★</div>
+                <p class="winner-label">GAME COMPLETE //</p>
+                <div id="winnerName" class="winner-name"></div>
+                <div id="winnerScore" class="winner-score"></div>
             </div>
-            <div class="winner-display">
-                <span id="winnerName" class="winner-name"></span>
-                <span id="winnerScore" class="winner-score"></span>
+            <div class="modal-body">
+                <div class="winner-rankings" id="winnerRankings"></div>
             </div>
-            <div id="winnerRankings" class="rankings-list"></div>
-            <button id="closeWinnerModal" class="btn btn-primary btn-full">
-                <span class="btn-text">Play Again</span>
-            </button>
+            <div class="modal-footer">
+                <button id="closeWinnerModal" class="btn btn-primary btn-lg">PLAY AGAIN</button>
+            </div>
         </div>
     </div>
 
